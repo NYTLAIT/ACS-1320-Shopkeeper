@@ -1,7 +1,17 @@
 
 
-export function simulateDay(state) {
+export function simulateDay(state, event) {
     let revenue = 0;
+    let cleanlinessModifier = 0;
+
+    // Cleanliness effect
+    if (state.cleanliness < 40) {
+    cleanlinessModifier = -1;
+    }
+
+    if (state.cleanliness > 70) {
+    cleanlinessModifier = 1;
+    }
 
     // Coffee sales
     let coffeeSold = 0;
@@ -11,9 +21,6 @@ export function simulateDay(state) {
         coffeeSold = Math.min(1, state.inventory.coffee);
     }
 
-    state.inventory.coffee -= coffeeSold;
-    revenue += coffeeSold * state.prices.coffee;
-
     // Bagel sales
     let bagelSold = 0;
     if (state.prices.bagel <= 300) {
@@ -21,8 +28,43 @@ export function simulateDay(state) {
     } else {
         bagelSold = Math.min(1, state.inventory.bagel);
     }
+    
+    // For cleanliness
+    coffeeSold = Math.max(0, coffeeSold + cleanlinessModifier);
+    bagelSold = Math.max(0, bagelSold + cleanlinessModifier);
 
+    // Promo
+    if (state.promoDaysLeft > 0) {
+        coffeeSold += 1;
+        bagelSold += 1;
+    }
+
+    // Events (bus tour, raccoon, bad weather)
+    if (event?.demandBoost == 1) {
+        coffeeSold += event.demandBoost
+        bagelSold += event.demandBoost
+    }
+    if (event?.steal == true) {
+        if (Math.random() > 0.5) {
+            state.inventory.coffee -= 1
+        } else {
+            state.inventory.bagel -= 1
+        }
+    }
+    if (event?.noBagels == true) {
+        bagelSold = 0
+    }
+
+    // Inventory limit and guard
+    coffeeSold = Math.min(coffeeSold, state.inventory.coffee);
+    bagelSold = Math.min(bagelSold, state.inventory.bagel);
+
+    // Update state
+    state.inventory.coffee -= coffeeSold;
     state.inventory.bagel -= bagelSold;
+
+    // Revenue calculations
+    revenue += coffeeSold * state.prices.coffee;
     revenue += bagelSold * state.prices.bagel;
 
     state.cashCents += revenue;

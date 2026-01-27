@@ -19,13 +19,30 @@ document.getElementById("clean").addEventListener("click", () => {
   dispatch({ type: "CLEAN" });
 });
 
+document.body.addEventListener("change", e => {
+  if (e.target.matches('#price-coffee')) {
+    dispatch({
+      type: "SET_PRICE",
+      item: "coffee",
+      price: Number(e.target.value)
+    })}
+
+  if (e.target.matches('#price-bagel')) {
+    dispatch({
+      type: "SET_PRICE",
+      item: "bagel",
+      price: Number(e.target.value)
+    })}
+})
+
+/* 
 document.getElementById("price-coffee").addEventListener("change", e => {
   dispatch({
     type: "SET_PRICE",
     item: "coffee",
     price: Number(e.target.value)
   });
-});
+}); 
 
 document.getElementById("price-bagel").addEventListener("change", e => {
   dispatch({
@@ -34,7 +51,12 @@ document.getElementById("price-bagel").addEventListener("change", e => {
     price: Number(e.target.value)
   });
 });
+*/
 
 document.getElementById("open-shop").addEventListener("click", () => {
   dispatch({ type: "OPEN_SHOP" });
+});
+
+document.getElementById("promo").addEventListener("click", () => {
+  dispatch({ type: "PROMO" });
 });

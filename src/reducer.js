@@ -1,5 +1,6 @@
 // This file updates state based on actions.
 import { simulateDay } from "./economy.js";
+import { randomEvent } from './events.js'
 
 export function update(state, action) {
     // Make a copy so we don’t change the original
@@ -24,10 +25,24 @@ export function update(state, action) {
     }
     
     if (action.type === "OPEN_SHOP") {
-        simulateDay(newState);
+        const event = randomEvent(newState);
+        simulateDay(newState, event);
         newState.day += 1;
         newState.log.push("You opened the shop.");
+        if (newState.promoDaysLeft > 0) {
+            newState.promoDaysLeft -= 1;
+        }
     }
         
+    if (action.type === "PROMO") {
+        if (newState.cashCents >= 300) {
+            newState.cashCents -= 300;
+            newState.promoDaysLeft = 2;
+            newState.log.push("You ran a promotion.");
+        } else {
+            newState.log.push("Not enough cash to run a promotion.");
+        }
+    }
+
   return newState;
 }
