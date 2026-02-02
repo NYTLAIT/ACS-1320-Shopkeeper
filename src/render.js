@@ -4,6 +4,7 @@ export function render(state) {
   renderStatus(state);
   renderInventory(state);
   renderLog(state);
+  renderReport(state);
 }
 
 function renderStatus(state) {
@@ -42,5 +43,21 @@ function renderLog(state) {
     <ul>
       ${state.log.map(msg => `<li>${msg}</li>`).join("")}
     </ul>
+  `;
+}
+
+function renderReport(state) {
+  const report = document.getElementById("report");
+
+  if (!state.lastReport) {
+    report.innerHTML = `<h2>Report</h2><p>No report yet. Open the shop!</p>`;
+    return;
+  }
+
+  report.innerHTML = `
+    <h2>Report</h2>
+    <p>Coffee sold: ${state.lastReport.coffeeSold}</p>
+    <p>Bagels sold: ${state.lastReport.bagelSold}</p>
+    <p>Revenue: $${(state.lastReport.revenue / 100).toFixed(2)}</p>
   `;
 }

@@ -18,6 +18,10 @@ export function makeInitialState() {
         bagel: 250
         },
 
+        orderedToday: false,
+
+        gameOver: false,
+
         lastReport: null,
         log: ["Welcome to your new shop!"]
     };
