@@ -30,6 +30,18 @@ document.getElementById("clean").addEventListener("click", () => {
   dispatch({ type: "CLEAN" });
 });
 
+const inventoryEl = document.getElementById("inventory");
+
+inventoryEl.addEventListener("change", (e) => {
+  if (!e.target.classList.contains("price-input")) return;
+
+  const item = e.target.dataset.item;
+  const price = Number(e.target.value);
+
+  dispatch({ type: "SET_PRICE", item, price });
+});
+
+/* 
 document.body.addEventListener("change", e => {
   if (e.target.matches('#price-coffee')) {
     dispatch({
@@ -45,6 +57,7 @@ document.body.addEventListener("change", e => {
       price: Number(e.target.value)
     })}
 })
+*/
 
 /* 
 document.getElementById("price-coffee").addEventListener("change", e => {

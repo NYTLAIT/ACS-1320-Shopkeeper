@@ -45,10 +45,13 @@ export function simulateDay(state, event) {
         bagelSold += event.demandBoost
     }
     if (event?.steal == true) {
-        if (Math.random() > 0.5) {
+        roll = Math.random()
+        if (roll < 0.33) {
             state.inventory.coffee -= 1
-        } else {
+        } else if (roll > 0.66) {
             state.inventory.bagel -= 1
+        } else {
+            state.inventory.tea -= 1
         }
     }
     if (event?.noBagels == true) {
@@ -69,8 +72,10 @@ export function simulateDay(state, event) {
 
     state.cashCents += revenue;
     state.lastReport = {
-        coffeeSold,
-        bagelSold,
+        soldByItem: {
+            coffee: coffeeSold,
+            bagel: bagelSold
+        },
         revenue
     };
 }
