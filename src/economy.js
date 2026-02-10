@@ -1,81 +1,83 @@
-
+import { PRODUCTS } from "./products.js"
 
 export function simulateDay(state, event) {
-    let revenue = 0;
-    let cleanlinessModifier = 0;
+    let revenue = 0
+    let soldByItem = {}
+    let dailyMultiplier = 1
 
-    // Cleanliness effect
-    if (state.cleanliness < 40) {
-    cleanlinessModifier = -1;
-    }
-
-    if (state.cleanliness > 70) {
-    cleanlinessModifier = 1;
-    }
-
-    // Coffee sales
-    let coffeeSold = 0;
-    if (state.prices.coffee <= 350) {
-        coffeeSold = Math.min(3, state.inventory.coffee);
+    // DAILY RANDOMNESS
+    const dailyMultiplierRoll = Math.random()
+    if (dailyMultiplierRoll < 0.1) {
+        dailyMultiplier = 0.7
+        state.log.push("Terrible day -- curse you overly snowy weather")
+    } else if (dailyMultiplierRoll < 0.3) {
+        dailyMultiplier = 0.85
+        state.log.push("Slow day -- fewer customers than usual")
+    } else if (dailyMultiplierRoll < 0.85) {
+        dailyMultiplier = 1
+        state.log.push("Normal day -- another satisfactory day")
     } else {
-        coffeeSold = Math.min(1, state.inventory.coffee);
+        dailyMultiplier = 1.25
+        state.log.push("Great day -- lunch rush was huge")
     }
+    console.log(`Day Multiplier ${dailyMultiplier}`)
 
-    // Bagel sales
-    let bagelSold = 0;
-    if (state.prices.bagel <= 300) {
-        bagelSold = Math.min(2, state.inventory.bagel);
-    } else {
-        bagelSold = Math.min(1, state.inventory.bagel);
-    }
-    
-    // For cleanliness
-    coffeeSold = Math.max(0, coffeeSold + cleanlinessModifier);
-    bagelSold = Math.max(0, bagelSold + cleanlinessModifier);
+    const {
+        inventory,
+        prices,
+        cleanliness,
+        promoDaysLeft
+    } = state
 
-    // Promo
-    if (state.promoDaysLeft > 0) {
-        coffeeSold += 1;
-        bagelSold += 1;
-    }
+    PRODUCTS.forEach((product) => {
+        const { id, baseDemand } = product
 
-    // Events (bus tour, raccoon, bad weather)
-    if (event?.demandBoost == 1) {
-        coffeeSold += event.demandBoost
-        bagelSold += event.demandBoost
-    }
-    if (event?.steal == true) {
-        roll = Math.random()
-        if (roll < 0.33) {
-            state.inventory.coffee -= 1
-        } else if (roll > 0.66) {
-            state.inventory.bagel -= 1
-        } else {
-            state.inventory.tea -= 1
+        const productMultiplier = 0.80 + Math.random() * 0.30
+        let onHand = inventory[id] ?? 0
+        let dailyProductSales = baseDemand * productMultiplier * dailyMultiplier// raw stats with no buffs or debuffs yet
+
+        console.log(`${id} Base Product: ${baseDemand} * Product Multiplier: ${productMultiplier} * Day Multiplier: ${dailyMultiplier} = ${dailyProductSales}`)
+
+        if (cleanliness <= 40) {
+            dailyProductSales *= 0.6
+        } else if (cleanliness >= 80) {
+            dailyProductSales *= 1.1
         }
-    }
-    if (event?.noBagels == true) {
-        bagelSold = 0
-    }
 
-    // Inventory limit and guard
-    coffeeSold = Math.min(coffeeSold, state.inventory.coffee);
-    bagelSold = Math.min(bagelSold, state.inventory.bagel);
+        if (promoDaysLeft > 0) {
+            dailyProductSales *= 1.2
+        }
 
-    // Update state
-    state.inventory.coffee -= coffeeSold;
-    state.inventory.bagel -= bagelSold;
+        if (event?.eventMultiplier) {
+            dailyProductSales *= event.eventMultiplier
+        }
+        if (event?.raccoonRansack) {
+            onHand -= Math.max(0, Math.min(Math.floor(Math.random() * 11), onHand))
+        }
 
-    // Revenue calculations
-    revenue += coffeeSold * state.prices.coffee;
-    revenue += bagelSold * state.prices.bagel;
+        // Clamp: onHand changes must be implemented before or it will break
+        dailyProductSales = Math.round(dailyProductSales)
+        dailyProductSales = Math.max(0, dailyProductSales)
+        dailyProductSales = Math.min(dailyProductSales, onHand)
 
-    state.cashCents += revenue;
-    state.lastReport = {
-        soldByItem: {
-            coffee: coffeeSold,
-            bagel: bagelSold
-        },
-        revenue
-    };
+        // Applying Effects
+        inventory[id] = onHand - dailyProductSales
+
+        const price = prices[id] ?? 0
+        const productRevenue = dailyProductSales * price
+
+        soldByItem[id] = dailyProductSales
+        revenue += productRevenue
+
+        console.log(`${id} Final Sales ${dailyProductSales}`)
+    })
+
+    // Promo Day
+    if (state.promoDaysLeft > 0) {state.promoDaysLeft -= 1}
+
+    state.cashCents += revenue
+    state.lastReport = { soldByItem, revenue }
 }
+
+
+

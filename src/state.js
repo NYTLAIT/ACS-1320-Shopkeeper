@@ -9,9 +9,9 @@ export function makeInitialState() {
         promoDaysLeft: 0,
 
         inventory: {
-        coffee: 100,
-        bagel: 70,
-        tea: 30
+        coffee: 160,
+        bagel: 100,
+        tea: 60
         },
 
         prices: {
