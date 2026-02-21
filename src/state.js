@@ -21,6 +21,7 @@ export function makeInitialState() {
         },
 
         orderedToday: false,
+        incomingOrders: null,
 
         gameOver: false,
 

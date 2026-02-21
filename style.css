@@ -1,0 +1,69 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #2F1B12;
+    background-color: burlywood;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+        "a a"
+        "b c";
+}
+
+h1, h2 {
+    font-family: 'Segoe UI';
+    margin: 0 0 0.6rem 0;
+}
+
+p {
+    padding: 0;
+    margin: 0.2rem 0;
+}
+
+button, select, input {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #2F1B12;
+    background-color: white;
+    border: 1px solid lightgrey;
+    box-shadow: 1px 1px 1px #2F1B12;
+}
+
+h1 {
+    grid-area: a;
+}
+
+#left-panel {
+    grid-area: b;
+    display: flex;
+    flex-direction: column;
+}
+
+#right-panel {
+    grid-area: c;
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    border: 2px solid #2F1B12;
+    background-color: white;
+    margin: 0.2rem 0.4rem;
+    padding: 1rem;
+    border-radius: 11px;
+}
+
+.button-section {
+    margin: 0.2rem 0.4rem;
+    padding: 0.2rem;
+}
+
+.button-section > button {
+    font-size: 1rem;
+    border-radius: 6px;
+    margin: 0.1rem 0;
+}
+
+#log-content {
+    max-height: 40vw;
+    overflow-y: auto
+}

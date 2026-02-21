@@ -48,9 +48,11 @@ function renderLog(state) {
   const log = document.getElementById("log");
   log.innerHTML = `
     <h2>Log</h2>
-    <ul>
-      ${state.log.map(msg => `<li>${msg}</li>`).join("")}
-    </ul>
+    <section id="log-content">
+      <ul>
+        ${state.log.map(msg => `<li>${msg}</li>`).join("")}
+      </ul>
+    </section>
   `;
 }
 
@@ -89,6 +91,6 @@ function renderOrderPanel(state) {
 
   const orderBtn = document.getElementById("order-button");
   if (orderBtn) {
-    orderBtn.disabled = !!state.orderedToday || !!state.gameOver;
+    orderBtn.disabled = !state.gameOver;
   }
 }

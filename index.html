@@ -6,41 +6,58 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
-
         <h1>Shopkeeper</h1>
 
-        <section id="status"></section>
-        <section id="inventory"></section>
+        <!-- Left Panel -->
+        <section class="container" id="left-panel">
+            <!-- inventory -->
+            <section class="section" id="inventory"></section>
 
-        <section id="controls">
-            <button id="next-day">Next Day</button>
-            <button id="clean">Clean Shop</button>
-            <button id="open-shop">Open Shop</button>
-            <button id="promo">Run Promotion</button>
-            
-            <section id="orders">
-                <h2>Order Stock</h2>
+            <!-- controls -->
+            <section id="controls">
+                <!-- order items -->
+                <section class="section" id="orders">
+                    <h2>Order Stock</h2>
 
-                <label>
-                    Item:
-                    <select id="order-item"></select>
-                </label>
+                    <label>
+                        Item:
+                        <select id="order-item"></select>
+                    </label>
 
-                <label>
-                    Quantity:
-                    <input id="order-qty" type="number" value="1" min="1" max="20">
-                </label>
+                    <label>
+                        Quantity:
+                        <input id="order-qty" type="number" value="1" min="1" max="60">
+                    </label>
 
-                <button id="order-button">Place Order</button>
+                    <button id="order-button">Place Order</button>
+                </section>
+
+                <!-- action buttons -->
+                <section class="button-section" id="action-buttons">
+                    <button id="next-day">Next Day</button>
+                    <button id="clean">Clean Shop</button>
+                    <button id="open-shop">Open Shop</button>
+                    <button id="promo">Run Promotion</button>
+                </section>
+
+                <!-- game buttons -->
+                <section class="button-section" id="game-buttons">
+                    <button id="save">Save</button>
+                    <button id="load">Load</button>
+                    <button id="new-game">New Game</button>
+                </section>
             </section>
-
-            <button id="save">Save</button>
-            <button id="load">Load</button>
-            <button id="new-game">New Game</button>
         </section>
 
-        <section id="report"></section>
-        <section id="log"></section>
+        <!-- Right Panel -->
+        <section class="container" id="right-panel">
+            <!-- status -->
+            <section class="section" id="status"></section>
+            <!-- report -->
+            <section class="section" id="report"></section>
+            <!-- log -->
+            <section class="section" id="log"></section>
+        </section>
 
         <script type="module" src="src/main.js"></script>
     </body>

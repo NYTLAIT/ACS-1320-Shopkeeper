@@ -11,6 +11,14 @@ export function update(state, action) {
     if (action.type === "NEXT_DAY") {
         newState.day += 1;
         newState.log.push("A new day begins.");
+
+        if (newState.incomingOrders) {
+            const item = newState.incomingOrders["item"]
+            const qty = newState.incomingOrders["qty"]
+            newState.inventory[item] += qty
+            newState.log.push(`Delivery of ${qty} ${item}(s) arrived.`)
+            newState.incomingOrders = null
+        }
     }
 
     if (action.type === "CLEAN") {
@@ -34,6 +42,7 @@ export function update(state, action) {
         newState.log.push(`Paid rent: $${(rentCents / 100).toFixed(2)}.`);
         newState.day += 1;
         newState.orderedToday = false;
+
         newState.log.push("You opened the shop.");
         if (newState.promoDaysLeft > 0) {
             newState.promoDaysLeft -= 1;
@@ -52,10 +61,12 @@ export function update(state, action) {
 
     if (action.type === "ORDER_STOCK") {
         const item = action.item;
-        const qty = clampNumber(action.qty, 1, 20);
+        const qty = clampNumber(action.qty, 1, 60);
+        newState.incomingOrders = {"item": item, "qty": qty}
 
         if (newState.orderedToday) {
             newState.log.push("You already placed an order today.");
+            console.log(newState.log)
             return newState;
         }
 
@@ -75,10 +86,10 @@ export function update(state, action) {
         }
 
         newState.cashCents -= totalCost;
-        newState.inventory[item] += qty;
         newState.orderedToday = true;
 
         newState.log.push(`Ordered ${qty} ${item}(s) for $${(totalCost / 100).toFixed(2)}.`);
+        console.log(newState.orderedToday)
         }
 
         //Win or Lose
