@@ -7,6 +7,7 @@ export function makeInitialState() {
         cashCents: 2500, // $25.00
         cleanliness: 60,
         promoDaysLeft: 0,
+        openedToday: false,
 
         inventory: {
         coffee: 160,

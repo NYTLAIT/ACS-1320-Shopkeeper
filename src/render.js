@@ -11,11 +11,20 @@ export function render(state) {
 
 function renderStatus(state) {
   const status = document.getElementById("status");
+
+  let incomingOrderText = "None"
+  if (state.incomingOrders) {
+    const { item, qty } = state.incomingOrders
+    incomingOrderText = `${qty} ${item}(s)`
+  }
+
   status.innerHTML = `
     <h2>Status</h2>
     <p><strong>Day:</strong> ${state.day}</p>
     <p><strong>Cash:</strong> $${(state.cashCents / 100).toFixed(2)}</p>
     <p><strong>Cleanliness:</strong> ${state.cleanliness}</p>
+    <p><strong>Promo Days Left:</strong> ${state.promoDaysLeft}</p>
+    <p><strong>Incoming Order:</strong> ${incomingOrderText}</p>
   `;
 }
 
@@ -91,6 +100,6 @@ function renderOrderPanel(state) {
 
   const orderBtn = document.getElementById("order-button");
   if (orderBtn) {
-    orderBtn.disabled = !state.gameOver;
+    orderBtn.disabled = state.gameOver;
   }
 }

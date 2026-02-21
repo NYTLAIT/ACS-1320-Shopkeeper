@@ -10,11 +10,16 @@ export function update(state, action) {
 
     if (action.type === "NEXT_DAY") {
         newState.day += 1;
+        newState.openedToday = false
+        newState.orderedToday = false;
         newState.log.push("A new day begins.");
 
+        const rentCents = 200;
+        newState.cashCents -= rentCents;
+        newState.log.push(`Paid rent: $${(rentCents / 100).toFixed(2)}.`);
+
         if (newState.incomingOrders) {
-            const item = newState.incomingOrders["item"]
-            const qty = newState.incomingOrders["qty"]
+            const { item, qty } = newState.incomingOrders
             newState.inventory[item] += qty
             newState.log.push(`Delivery of ${qty} ${item}(s) arrived.`)
             newState.incomingOrders = null
@@ -35,13 +40,15 @@ export function update(state, action) {
     }
     
     if (action.type === "OPEN_SHOP") {
+        if (newState.openedToday) {
+            newState.log.push("What a day! Next day again!");
+            console.log(newState.log)
+            return newState
+        }
+
         const event = randomEvent(newState);
-        const rentCents = 200;
         simulateDay(newState, event);
-        newState.cashCents -= rentCents;
-        newState.log.push(`Paid rent: $${(rentCents / 100).toFixed(2)}.`);
-        newState.day += 1;
-        newState.orderedToday = false;
+        newState.openedToday = true;
 
         newState.log.push("You opened the shop.");
         if (newState.promoDaysLeft > 0) {
@@ -61,8 +68,7 @@ export function update(state, action) {
 
     if (action.type === "ORDER_STOCK") {
         const item = action.item;
-        const qty = clampNumber(action.qty, 1, 60);
-        newState.incomingOrders = {"item": item, "qty": qty}
+        const qty = clampNumber(action.qty, 1, 120);
 
         if (newState.orderedToday) {
             newState.log.push("You already placed an order today.");
@@ -85,12 +91,14 @@ export function update(state, action) {
             return newState;
         }
 
+        newState.incomingOrders = {item: item, qty: qty}
+
         newState.cashCents -= totalCost;
         newState.orderedToday = true;
 
         newState.log.push(`Ordered ${qty} ${item}(s) for $${(totalCost / 100).toFixed(2)}.`);
         console.log(newState.orderedToday)
-        }
+    }
 
         //Win or Lose
         if (newState.cashCents < 0) {
